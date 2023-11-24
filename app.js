@@ -1,3 +1,4 @@
+const ejsMate = require("ejs-mate");
 const express = require("express");
 const methodOverride = require("method-override");
 const path = require("path");
@@ -7,6 +8,7 @@ const Place = require("./models/place");
 const app = express();
 
 // Set view engine and views directory
+app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 

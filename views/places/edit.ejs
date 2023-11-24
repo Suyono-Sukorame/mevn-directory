@@ -1,29 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Update Place - BestPoint</title>
-  </head>
-  <body>
-    <h1>Update Place</h1>
-    <form action="/places/<%= place._id %>?_method=PUT" method="POST">
-      <div>
-        <label for="title">Title</label>
-        <input type="text" name="place[title]" id="title" value="<%= place.title %>" />
-        <!-- Tambahkan nilai dari place.title -->
-      </div>
-      <div>
-        <label for="location">Location</label>
-        <input type="text" name="place[location]" id="location" value="<%= place.location %>" />
-        <!-- Tambahkan nilai dari place.location -->
-      </div>
-      <div>
-        <label for="price">Price</label>
-        <input type="text" name="place[price]" id="price" value="<%= place.price %>" />
-        <!-- Tambahkan nilai dari place.price -->
-      </div>
-      <button type="submit">Save</button>
-    </form>
-  </body>
-</html>
+<% layout('layouts/app') -%>
+<h1>Update Place</h1>
+<form action="/places/<%= place._id %>?_method=PUT" method="POST">
+  <div>
+    <label for="title">Title</label>
+    <input type="text" name="place[title]" id="title" value="<%= place.title %>" />
+    <!-- Tambahkan nilai dari place.title -->
+  </div>
+  <div>
+    <label for="location">Location</label>
+    <input type="text" name="place[location]" id="location" value="<%= place.location %>" />
+    <!-- Tambahkan nilai dari place.location -->
+  </div>
+  <div>
+    <label for="price">Price</label>
+    <input type="text" name="place[price]" id="price" value="<%= place.price %>" />
+    <!-- Tambahkan nilai dari place.price -->
+  </div>
+  <button type="submit">Save</button>
+</form>
