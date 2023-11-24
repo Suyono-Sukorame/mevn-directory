@@ -1,21 +1,33 @@
 const express = require("express");
 const path = require("path");
-const app = express();
 const mongoose = require("mongoose");
+const Place = require("./models/place");
 
+const app = express();
+
+// Set view engine and views directory
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Contoh definisi variabel currentUser
-const currentUser = {
-  // Definisikan properti-properti currentUser di sini
-};
+// Connect to MongoDB
+mongoose
+  .connect("mongodb://127.0.0.1/mevn_directory")
+  .then(() => {
+    console.log("Connected to MongoDB");
+    startServer(); // Call the function to start the server once connected to MongoDB
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
 
+// Route to render the home page
 app.get("/", async (req, res) => {
-  // Meneruskan variabel currentUser ke dalam template "home" saat merender
-  res.render("home", { currentUser: currentUser });
+  res.render("home");
 });
 
-app.listen(3000, () => {
-  console.log(`server is running on http://127.0.0.1:3000`);
-});
+// Function to start the server
+function startServer() {
+  app.listen(3000, () => {
+    console.log(`Server is running on http://127.0.0.1:3000`);
+  });
+}
