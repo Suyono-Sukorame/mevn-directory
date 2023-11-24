@@ -25,6 +25,20 @@ app.get("/", async (req, res) => {
   res.render("home");
 });
 
+app.get("/places", async (req, res) => {
+  const places = await Place.find();
+  res.render("places/index", { places });
+});
+
+app.get("/places/:id", async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    res.render("places/show", { place });
+  } catch (err) {
+    res.status(500).send("Terjadi kesalahan saat memuat data place");
+  }
+});
+
 // Function to start the server
 function startServer() {
   app.listen(3000, () => {
