@@ -9,6 +9,9 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// middleware
+app.use(express.urlencoded({ extended: true }));
+
 // Connect to MongoDB
 mongoose
   .connect("mongodb://127.0.0.1/mevn_directory")
@@ -28,6 +31,21 @@ app.get("/", async (req, res) => {
 app.get("/places", async (req, res) => {
   const places = await Place.find();
   res.render("places/index", { places });
+});
+
+app.get("/places/create", (req, res) => {
+  res.render("places/create");
+});
+
+app.post("/places", async (req, res) => {
+  try {
+    const place = new Place(req.body.place);
+    await place.save();
+    res.redirect("/places"); // Redirect setelah menyimpan selesai
+  } catch (err) {
+    console.error(err); // Tampilkan kesalahan pada konsol
+    res.status(500).send("Terjadi kesalahan saat menambahkan tempat baru: " + err.message);
+  }
 });
 
 app.get("/places/:id", async (req, res) => {
