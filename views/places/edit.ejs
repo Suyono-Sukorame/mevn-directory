@@ -1,20 +1,65 @@
 <% layout('layouts/app') -%>
-<h1>Update Place</h1>
-<form action="/places/<%= place._id %>?_method=PUT" method="POST">
-  <div>
-    <label for="title">Title</label>
-    <input type="text" name="place[title]" id="title" value="<%= place.title %>" />
-    <!-- Tambahkan nilai dari place.title -->
-  </div>
-  <div>
-    <label for="location">Location</label>
-    <input type="text" name="place[location]" id="location" value="<%= place.location %>" />
-    <!-- Tambahkan nilai dari place.location -->
-  </div>
-  <div>
-    <label for="price">Price</label>
-    <input type="text" name="place[price]" id="price" value="<%= place.price %>" />
-    <!-- Tambahkan nilai dari place.price -->
-  </div>
-  <button type="submit">Save</button>
-</form>
+<h1 class="text-center">Edit Place</h1>
+<div class="col-6 offset-3">
+  <form action="/places/<%= place._id %>?_method=PUT" method="POST" class="validated-form" novalidate>
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" name="place[title]" id="title" class="form-control" value="<%= place.title %>" required />
+      <div class="valid-feedback">Looks good!</div>
+      <div class="invalid-feedback">Please fill out this field.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="location" class="form-label">Location</label>
+      <input type="text" name="place[location]" id="location" class="form-control" value="<%= place.location %>" required />
+      <div class="valid-feedback">Looks good!</div>
+      <div class="invalid-feedback">Please fill out this field.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea name="place[description]" id="description" class="form-control" required><%= place.description %></textarea>
+      <div class="valid-feedback">Looks good!</div>
+      <div class="invalid-feedback">Please fill out this field.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">Price</label>
+      <input type="text" name="place[price]" id="price" class="form-control" value="<%= place.price %>" required />
+      <div class="valid-feedback">Looks good!</div>
+      <div class="invalid-feedback">Please fill out this field.</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="image" class="form-label">Image Url</label>
+      <input type="text" name="place[image]" id="image" class="form-control" value="<%= place.image %>" />
+      <div class="valid-feedback">Looks good!</div>
+      <div class="invalid-feedback">Please fill out this field.</div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+  </form>
+</div>
+
+<script>
+  (() => {
+    "use strict";
+
+    const forms = document.querySelectorAll(".validated-form");
+
+    Array.from(forms).forEach((form) => {
+      form.addEventListener(
+        "submit",
+        (event) => {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  })();
+</script>
