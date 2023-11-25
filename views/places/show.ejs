@@ -5,12 +5,12 @@
     <div class="card">
       <img src="<%= place.image %>" alt="<%= place.title %>" class="card-img-top">
       <div class="card-body">
-        <h1 class="card-title"><%= place.title %></h1>
-        <h5 class="card-text"><%= place.description %></h5>
+        <h3 class="card-title"><%= place.title %></h3>
+        <h6 class="card-text"><%= place.description %></h6>
       </div>
       <ul class="list-group list-group-flush">
-        <h5 class="list-group-item"><%= place.location %></h5>
-        <h5 class="list-group-item"><%= place.price %></h5>
+        <h6 class="list-group-item"><%= place.location %></h6>
+        <h6 class="list-group-item"><%= place.price %></h6>
       </ul>
       <div class="card-body">
         <a href="/places/<%= place._id %>/edit" class="card-link btn btn-warning text-white">Edit</a>
