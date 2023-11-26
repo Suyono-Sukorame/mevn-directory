@@ -1,19 +1,13 @@
 const ejsMate = require("ejs-mate");
 const express = require("express");
-const ErrorHandler = require("./utils/ExpressError");
-const Joi = require("joi");
+const session = require("express-session");
 const methodOverride = require("method-override");
 const path = require("path");
-const wrapAsync = require("./utils/wrapAsync");
 const mongoose = require("mongoose");
-const Place = require("./models/place");
-const Review = require("./models/review");
+
+// const Review = require("./models/review");
 
 const app = express();
-
-// schemas
-const { placeSchema } = require("./schemas/place");
-const { reviewSchema } = require("./schemas/review");
 
 // Set view engine and views directory
 app.engine("ejs", ejsMate);
@@ -23,26 +17,19 @@ app.set("views", path.join(__dirname, "views"));
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    return next(new ErrorHandler(error, 400));
-  } else {
-    next();
-  }
-};
-
-const validatePlace = (req, res, next) => {
-  const { error } = placeSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    return next(new ErrorHandler(error, 400));
-  } else {
-    next();
-  }
-};
+app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    secret: "this-is-a-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  })
+);
 
 // Connect to MongoDB and start the server
 async function startServer() {
@@ -57,100 +44,20 @@ async function startServer() {
   }
 }
 
-// Routes
+// Validation Middleware
+
 app.get("/", async (req, res) => {
   res.render("home");
 });
 
-app.get(
-  "/places",
-  wrapAsync(async (req, res) => {
-    const places = await Place.find();
-    res.render("places/index", { places });
-  })
-);
+app.use("/places", require("./routes/places"));
+app.use("/places/:place_id/reviews", require("./routes/reviews"));
 
-app.get("/places/create", (req, res) => {
-  res.render("places/create");
-});
-
-app.post(
-  "/places",
-  validatePlace,
-  wrapAsync(async (req, res) => {
-    const place = new Place(req.body.place);
-    await place.save();
-    res.redirect("/places");
-  })
-);
-
-app.get(
-  "/places/:id",
-  wrapAsync(async (req, res) => {
-    const place = await Place.findById(req.params.id).populate("reviews");
-    res.render("places/show", { place });
-  })
-);
-
-app.get(
-  "/places/:id/edit",
-  wrapAsync(async (req, res) => {
-    const place = await Place.findById(req.params.id);
-    if (!place) {
-      return res.status(404).send("Tempat tidak ditemukan");
-    }
-    res.render("places/edit", { place });
-  })
-);
-
-app.put(
-  "/places/:id",
-  validatePlace,
-  wrapAsync(async (req, res) => {
-    const place = await Place.findByIdAndUpdate(req.params.id, { ...req.body.place });
-    if (!place) {
-      return res.status(404).send("Tempat tidak ditemukan");
-    }
-    res.redirect("/places");
-  })
-);
-
-app.delete(
-  "/places/:id",
-  wrapAsync(async (req, res) => {
-    await Place.findByIdAndDelete(req.params.id);
-    res.redirect("/places");
-  })
-);
-
-app.post(
-  "/places/:id/reviews",
-  validateReview,
-  wrapAsync(async (req, res) => {
-    const review = new Review(req.body.review);
-    const place = await Place.findById(req.params.id);
-    place.reviews.push(review);
-    await review.save();
-    await place.save();
-    res.redirect(`/places/${req.params.id}`);
-  })
-);
-
-app.delete(
-  "/places/:place_id/reviews/:review_id",
-  wrapAsync(async (req, res) => {
-    const { place_id, review_id } = req.params;
-    await Place.findByIdAndUpdate(place_id, { $pull: { reviews: review_id } });
-    await Review.findByIdAndDelete(review_id);
-    res.redirect(`/places/${place_id}`);
-  })
-);
-
+// Error handling middleware
 app.all("*", (req, res, next) => {
   next(new ErrorHandler("Page not found", 404));
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   if (!err.message) err.message = "Oh No, Something Went Wrong!";
