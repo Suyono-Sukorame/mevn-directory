@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Review = require("./review");
+// const Review = require("./review");
 
 const placeSchema = new Schema({
   title: String,
@@ -8,7 +8,6 @@ const placeSchema = new Schema({
   description: String,
   location: String,
   image: String,
-
   reviews: [
     {
       type: Schema.Types.ObjectId,

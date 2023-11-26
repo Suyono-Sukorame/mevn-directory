@@ -87,7 +87,7 @@ app.post(
 app.get(
   "/places/:id",
   wrapAsync(async (req, res) => {
-    const place = await Place.findById(req.params.id);
+    const place = await Place.findById(req.params.id).populate("reviews");
     res.render("places/show", { place });
   })
 );
