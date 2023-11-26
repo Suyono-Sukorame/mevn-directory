@@ -5,9 +5,9 @@ const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const path = require("path");
 const mongoose = require("mongoose");
-
-// const Review = require("./models/review");
-
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 const app = express();
 
 // Set view engine and views directory
@@ -32,6 +32,13 @@ app.use(
   })
 );
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
@@ -55,6 +62,16 @@ async function startServer() {
 
 app.get("/", async (req, res) => {
   res.render("home");
+});
+
+app.get("/register", async (req, res) => {
+  const user = new User({
+    email: "user@gmail.com",
+    username: "user",
+  });
+
+  const newUser = await User.register(user, "password");
+  res.send(newUser);
 });
 
 app.use("/places", require("./routes/places"));
