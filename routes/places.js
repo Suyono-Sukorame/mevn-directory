@@ -36,6 +36,7 @@ router.post(
   wrapAsync(async (req, res) => {
     const place = new Place(req.body.place);
     await place.save();
+    req.flash("success_msg", "Place added successfully");
     res.redirect("/places");
   })
 );
@@ -64,10 +65,11 @@ router.put(
   validatePlace,
   wrapAsync(async (req, res) => {
     const place = await Place.findByIdAndUpdate(req.params.id, { ...req.body.place });
+    req.flash("success_msg", "Place updated successfully");
     if (!place) {
       return res.status(404).send("Tempat tidak ditemukan");
     }
-    res.redirect("/places");
+    res.redirect("/places/${req.params.id}");
   })
 );
 
@@ -75,6 +77,7 @@ router.delete(
   "/:id",
   wrapAsync(async (req, res) => {
     await Place.findByIdAndDelete(req.params.id);
+    req.flash("success_msg", "Place deleted successfully");
     res.redirect("/places");
   })
 );

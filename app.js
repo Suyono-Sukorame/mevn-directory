@@ -1,6 +1,7 @@
 const ejsMate = require("ejs-mate");
 const express = require("express");
 const session = require("express-session");
+const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -30,6 +31,12 @@ app.use(
     },
   })
 );
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  next();
+});
 
 // Connect to MongoDB and start the server
 async function startServer() {

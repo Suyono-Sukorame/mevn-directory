@@ -4,12 +4,6 @@ const Review = require("../models/review");
 const { reviewSchema } = require("../schemas/review");
 const ErrorHandler = require("../utils/ExpressError");
 const wrapAsync = require("../utils/wrapAsync");
-// const ReviewController = require("../controllers/reviews");
-// const isValidObjectId = require("../middlewares/isValidObjectId");
-// const isAuth = require("../middlewares/isAuth");
-// const validateReview = require("../middlewares/validateReview");
-// const { isAuthorReview } = require("../middlewares/isAuthor");
-// const router = express.Router({ mergeParams: true });
 
 const router = express.Router({ mergeParams: true });
 
@@ -32,7 +26,8 @@ router.post(
     place.reviews.push(review);
     await review.save();
     await place.save();
-    res.redirect(`/places/${req.params.place_id}`);
+    req.flash("success_msg", "Review added successfully");
+    res.redirect(`/places`); // koreksi kesalahan ada disini
   })
 );
 
@@ -42,6 +37,7 @@ router.delete(
     const { place_id, review_id } = req.params;
     await Place.findByIdAndUpdate(place_id, { $pull: { reviews: review_id } });
     await Review.findByIdAndDelete(review_id);
+    req.flash("success_msg", "Review deleted successfully");
     res.redirect(`/places/${place_id}`);
   })
 );
