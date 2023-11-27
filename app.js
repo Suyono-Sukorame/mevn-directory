@@ -64,22 +64,13 @@ app.get("/", async (req, res) => {
   res.render("home");
 });
 
-app.get("/register", async (req, res) => {
-  const user = new User({
-    email: "user@gmail.com",
-    username: "user",
-  });
-
-  const newUser = await User.register(user, "password");
-  res.send(newUser);
-});
-
+app.use("/", require("./routes/auth"));
 app.use("/places", require("./routes/places"));
 app.use("/places/:place_id/reviews", require("./routes/reviews"));
 
 // Error handling middleware
 app.all("*", (req, res, next) => {
-  next(new ErrorHandler("Page not found", 404));
+  next(new ErrorHandler());
 });
 
 app.use((err, req, res, next) => {
