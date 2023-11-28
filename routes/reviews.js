@@ -5,6 +5,7 @@ const { reviewSchema } = require("../schemas/review");
 const ErrorHandler = require("../utils/ExpressError");
 const wrapAsync = require("../utils/wrapAsync");
 const isValidObjectId = require("../middlewares/isValidObjectId");
+const isAuth = require("../middlewares/isAuth.js");
 
 const router = express.Router({ mergeParams: true });
 
@@ -20,6 +21,7 @@ const validateReview = (req, res, next) => {
 
 router.post(
   "/",
+  isAuth,
   isValidObjectId("/places"),
   validateReview,
   wrapAsync(async (req, res) => {
@@ -35,6 +37,7 @@ router.post(
 
 router.delete(
   "/:review_id",
+  isAuth,
   isValidObjectId("/places"),
   wrapAsync(async (req, res) => {
     const { place_id, review_id } = req.params;
