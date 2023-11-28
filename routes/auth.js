@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const wrapAsync = require("../utils/wrapAsync");
+const passport = require("passport"); // Menggunakan require untuk 'passport'
 
 router.get("/register", (req, res) => {
   res.render("auth/register");
@@ -21,6 +22,23 @@ router.post(
       res.redirect("/register");
     }
   })
+);
+
+router.get("/login", (req, res) => {
+  res.render("auth/login");
+});
+
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+    successRedirect: "/places",
+    failureFlash: "Invalid username or password",
+  }),
+  (req, res) => {
+    res.redirect("/places");
+  }
 );
 
 module.exports = router;
