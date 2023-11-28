@@ -6,6 +6,7 @@ const ErrorHandler = require("../utils/ExpressError");
 const wrapAsync = require("../utils/wrapAsync");
 const isValidObjectId = require("../middlewares/isValidObjectId");
 const isAuth = require("../middlewares/isAuth.js");
+const { isAuthorReview } = require("../middlewares/isAuthor.js");
 
 const router = express.Router({ mergeParams: true });
 
@@ -43,6 +44,7 @@ router.post(
 router.delete(
   "/:review_id",
   isAuth,
+  isAuthorReview,
   isValidObjectId("/places"),
   wrapAsync(async (req, res) => {
     const { place_id, review_id } = req.params;

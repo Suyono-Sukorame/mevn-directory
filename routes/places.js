@@ -50,7 +50,15 @@ router.get(
   "/:id",
   isValidObjectId("/places"),
   wrapAsync(async (req, res) => {
-    const place = await Place.findById(req.params.id).populate("reviews").populate("author");
+    const place = await Place.findById(req.params.id)
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "author",
+        },
+      })
+      .populate("author");
+    // console.log(place); // nanti perlu dihapus
     res.render("places/show", { place });
   })
 );
