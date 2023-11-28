@@ -8,6 +8,10 @@ const placeSchema = new Schema({
   description: String,
   location: String,
   image: String,
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   reviews: [
     {
       type: Schema.Types.ObjectId,
@@ -15,35 +19,6 @@ const placeSchema = new Schema({
     },
   ],
 });
-
-//   geometry: {
-//     type: {
-//       type: String,
-//       enum: ["Point"],
-//       required: true,
-//     },
-//     coordinates: {
-//       type: [Number],
-//       required: true,
-//     },
-//   },
-//   images: [
-//     {
-//       url: String,
-//       filename: String,
-//     },
-//   ],
-//   author: {
-//     type: Schema.Types.ObjectId,
-//     ref: "User",
-//   },
-// reviews: [
-//   {
-//     type: Schema.Types.ObjectId,
-//     ref: "Review",
-//   },
-// ],
-// });
 
 placeSchema.post("findOneAndDelete", async function (doc) {
   if (doc) {

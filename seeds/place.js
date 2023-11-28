@@ -4,11 +4,12 @@ const hereMaps = require("../utils/hereMaps");
 
 mongoose
   .connect("mongodb://127.0.0.1/mevn_directory")
-  .then((result) => {
-    console.log("connected to mongodb");
+  .then(() => {
+    console.log("Connected to MongoDB");
+    seedPlaces();
   })
   .catch((err) => {
-    console.log(err);
+    console.error("Connection error:", err);
   });
 
 async function seedPlaces() {
@@ -156,33 +157,31 @@ async function seedPlaces() {
     },
   ];
 
-  const newPlace = await Promise.all(
-    places.map(async (place) => {
-      let geoData = await hereMaps.geometry(place.location);
-      if (!geoData) {
-        geoData = { type: "Point", coordinates: [116.32883, -8.90952] };
-      }
-      return {
-        ...place,
-        author: "643d36579773b789e91ef660",
-        images: {
-          url: "public\\images\\image-1681876521153-260851838.jpg",
-          filename: "image-1681876521153-260851838.jpg",
-        },
-        geometry: { ...geoData },
-      };
-    })
-  );
-
   try {
+    const newPlaces = await Promise.all(
+      places.map(async (place) => {
+        let geoData = await hereMaps.geometry(place.location);
+        if (!geoData) {
+          geoData = { type: "Point", coordinates: [116.32883, -8.90952] };
+        }
+        return {
+          ...place,
+          author: "6563d361e08220f6a2c75204",
+          images: {
+            url: "public\\images\\image-1681876521153-260851838.jpg",
+            filename: "image-1681876521153-260851838.jpg",
+          },
+          geometry: { ...geoData },
+        };
+      })
+    );
+
     await Place.deleteMany({});
-    await Place.insertMany(newPlace);
+    await Place.insertMany(newPlaces);
     console.log("Data berhasil disimpan");
   } catch (err) {
-    console.log("Terjadi kesalahan saat menyimpan data:", err);
+    console.error("Terjadi kesalahan saat menyimpan data:", err);
   } finally {
     mongoose.disconnect();
   }
 }
-
-seedPlaces();
