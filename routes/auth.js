@@ -1,21 +1,31 @@
 const express = require("express");
 const router = express.Router();
+const User = require("../models/user");
 const AuthController = require("../controllers/auth");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
 
-// Rute-rute untuk otentikasi
-router.get("/register", AuthController.showRegisterForm);
-router.post("/register", wrapAsync(AuthController.registerUser));
-router.get("/login", AuthController.showLoginForm);
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  AuthController.loginUser
-);
-router.post("/logout", AuthController.logoutUser);
+router
+  .route("/register")
+  .get((req, res) => {
+    res.render("auth/register");
+  })
+  .post(wrapAsync(AuthController.register));
+
+router
+  .route("/login")
+  .get(AuthController.loginForm)
+  .post(
+    passport.authenticate("local", {
+      failureRedirect: "/login",
+      failureFlash: {
+        type: "error_msg",
+        msg: "Invalid username or password",
+      },
+    }),
+    AuthController.login
+  );
+
+router.post("/logout", AuthController.logout);
 
 module.exports = router;

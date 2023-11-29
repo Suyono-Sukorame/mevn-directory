@@ -60,6 +60,7 @@ async function startServer() {
 }
 
 // Validation Middleware
+// ... [Kode validasi middleware lainnya]
 
 app.get("/", async (req, res) => {
   res.render("home");

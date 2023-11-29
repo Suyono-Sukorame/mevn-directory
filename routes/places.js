@@ -1,35 +1,25 @@
 const express = require("express");
-const PlaceController = require("../controllers/places");
-const { placeSchema } = require("../schemas/place");
-const ErrorHandler = require("../utils/ExpressError");
 const wrapAsync = require("../utils/wrapAsync");
+const PlaceController = require("../controllers/places");
 const isValidObjectId = require("../middlewares/isValidObjectId");
 const isAuth = require("../middlewares/isAuth");
+const validatePlace = require("../middlewares/validatePlace");
 const { isAuthorPlace } = require("../middlewares/isAuthor");
-
+const upload = require("multer")(); // Menambahkan multer dengan konfigurasi yang diperlukan
 const router = express.Router();
 
-const validatePlace = (req, res, next) => {
-  const { error } = placeSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    return next(new ErrorHandler(error, 400));
-  } else {
-    next();
-  }
-};
+router.route("/").get(wrapAsync(PlaceController.index)).post(isAuth, upload.array("image", 5), validatePlace, wrapAsync(PlaceController.store));
 
-router.get("/", wrapAsync(PlaceController.index));
+router.get("/create", isAuth, PlaceController.create);
 
-router.get("/create", isAuth, (req, res) => {
-  res.render("places/create");
-});
+router
+  .route("/:id")
+  .get(isValidObjectId("/places"), wrapAsync(PlaceController.show))
+  .put(isAuth, isAuthorPlace, isValidObjectId("/places"), upload.array("image", 5), validatePlace, wrapAsync(PlaceController.update))
+  .delete(isAuth, isAuthorPlace, isValidObjectId("/places"), wrapAsync(PlaceController.destroy));
 
-router.post("/", isAuth, validatePlace, wrapAsync(PlaceController.store));
-router.get("/:id", isValidObjectId("/places"), wrapAsync(PlaceController.show));
 router.get("/:id/edit", isAuth, isAuthorPlace, isValidObjectId("/places"), wrapAsync(PlaceController.edit));
-router.put("/:id", isAuth, isAuthorPlace, isValidObjectId("/places"), validatePlace, wrapAsync(PlaceController.update));
-router.delete("/:id", isAuth, isAuthorPlace, isValidObjectId("/places"), wrapAsync(PlaceController.destroy));
-router.delete("/:id/images", isAuth, isAuthorPlace, isValidObjectId("/places"), wrapAsync(PlaceController.destroyImages));
+
+router.delete("/:id/images", wrapAsync(PlaceController.destroyImages));
 
 module.exports = router;
