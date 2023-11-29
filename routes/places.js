@@ -19,8 +19,6 @@ const validatePlace = (req, res, next) => {
   }
 };
 
-// Routes
-
 router.get("/", wrapAsync(PlaceController.index));
 
 router.get("/create", isAuth, (req, res) => {
@@ -28,11 +26,10 @@ router.get("/create", isAuth, (req, res) => {
 });
 
 router.post("/", isAuth, validatePlace, wrapAsync(PlaceController.store));
-// router.post("/", isAuth, validatePlace, wrapAsync(PlaceController.place));
 router.get("/:id", isValidObjectId("/places"), wrapAsync(PlaceController.show));
 router.get("/:id/edit", isAuth, isAuthorPlace, isValidObjectId("/places"), wrapAsync(PlaceController.edit));
 router.put("/:id", isAuth, isAuthorPlace, isValidObjectId("/places"), validatePlace, wrapAsync(PlaceController.update));
-
-router.delete("/:id", isAuth, isAuthorPlace, isValidObjectId("/places"), wrapAsync(PlaceController.delete));
+router.delete("/:id", isAuth, isAuthorPlace, isValidObjectId("/places"), wrapAsync(PlaceController.destroy));
+router.delete("/:id/images", isAuth, isAuthorPlace, isValidObjectId("/places"), wrapAsync(PlaceController.destroyImages));
 
 module.exports = router;
