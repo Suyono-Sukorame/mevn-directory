@@ -4,7 +4,9 @@
 <div class="row mb-5">
   <div class="col-6">
     <div class="card">
-      <img src="<%= place.image %>" alt="<%= place.title %>" class="card-img-top" />
+      <% for(const image of place.images) {%>
+      <img src="/images/<%= image.filename %>" class="card-img-top" alt="<%= place.title %>" />
+      <% } %>
       <div class="card-body">
         <h3 class="card-title"><%= place.title %></h3>
         <h6 class="card-text"><%= place.description %></h6>

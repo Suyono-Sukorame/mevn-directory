@@ -66,7 +66,7 @@ app.get("/", async (req, res) => {
   res.render("home");
 });
 
-app.use("/", require("./routes/auth"));
+app.use("/", require("./routes/user"));
 app.use("/places", require("./routes/places"));
 app.use("/places/:place_id/reviews", require("./routes/reviews"));
 

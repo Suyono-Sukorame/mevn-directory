@@ -7,7 +7,7 @@ const placeSchema = new Schema({
   price: Number,
   description: String,
   location: String,
-  image: [
+  images: [
     {
       url: String,
       filename: String,
