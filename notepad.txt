@@ -1,0 +1,74 @@
+mevn-directory/
+  ├── controllers                      // Berkaitan dengan logika aplikasi
+  │   ├── auth.js                      // Pengaturan autentikasi
+  │   ├── places.js                    // Pengaturan tempat
+  │   ├── reviews.js                   // Pengaturan ulasan
+  ├── middlewares                      // Middleware aplikasi
+  │   ├── isAuth.js                    // Autentikasi pengguna
+  │   ├── isAuthor.js                  // Otorisasi pengguna
+  │   ├── isValidObjectId.js           // Validasi ID objek
+  │   ├── validatePlace.js             // Validasi tempat
+  │   ├── validateReview.js            // Validasi ulasan
+  ├── models                           // Definisi model MongoDB
+  │   ├── places.js                    // Model tempat
+  │   ├── review.js                    // Model ulasan
+  │   ├── user.js                      // Model pengguna
+  ├── node_modulus                     // Paket-paket aplikasi
+  ├── public                           // Aset publik
+  │   ├── css                          // File-file CSS
+  │   │   ├── home.css                 // CSS untuk halaman utama
+  │   │   ├── stars.css                // CSS untuk bintang
+  │   ├── images                       // Gambar-gambar
+  │   │   ├── image-1681900961930.png  // Nama file gambar
+  │   ├── js                           // Skrip JavaScript
+  │   │   ├── validate-form.js         // Validasi formulir JavaScript
+  ├── routes                           // Definisi rute HTTP
+  │   ├── auth.js                      // Rute autentikasi
+  │   ├── places.js                    // Rute tempat
+  │   ├── reviews.js                   // Rute ulasan
+  ├── schemas                          // Skema validasi data
+  │   ├── place.js                     // Skema tempat
+  │   ├── review.js                    // Skema ulasan
+  ├── seeds                            // Data awal untuk basis data
+  │   ├── place.js                     // Data awal tempat
+  ├── utils                            // Fungsi-fungsi bantuan
+  │   ├── ExpressError.js              // Kelas kesalahan Express
+  │   ├── HereMaps.js                  // Fungsi terkait Here Maps
+  │   ├── wrapAsync.js                 // Fungsi pembungkus async
+  ├── views                            // Tampilan aplikasi
+  │   ├── auth                         // Halaman-halaman autentikasi
+  │   │   ├── login.ejs                // Halaman login
+  │   │   ├── register.ejs             // Halaman registrasi
+  │   ├── layouts                      // Tata letak
+  │   │   ├── partials                 // Bagian-bagian parsial
+  │   │   │   ├── alert.ejs            // Bagian pemberitahuan
+  │   │   │   ├── footer.ejs           // Bagian footer
+  │   │   │   ├── navbar.ejs           // Bagian navigasi
+  │   │   ├── app.ejs                  // Tata letak aplikasi
+  │   ├── places                       // Halaman-halaman tempat
+  │   │   ├── create.ej                // Halaman buat tempat
+  │   │   ├── edit.ejs                 // Halaman edit tempat
+  │   │   ├── index.ejs                // Halaman daftar tempat
+  │   │   ├── show.ejs                 // Halaman tampilkan tempat
+  │   ├── error.ejs                    // Halaman kesalahan
+  │   ├── home.ejs                     // Halaman utama
+  ├── .gitignore                       // Daftar file diabaikan Git
+  ├── app.js                           // File utama aplikasi
+  ├── package-lock.json                // Informasi dependensi terkunci
+  ├── package.json                     // Konfigurasi proyek dan dependensi
+
+app.js: File utama yang biasanya berfungsi sebagai titik masuk (entry point) dari aplikasi Node.js. Di sini, konfigurasi dasar seperti pengaturan server, penggunaan middleware, dan pemetaan rute-rute utama biasanya dilakukan.
+
+routes: File-file dalam folder ini seperti auth.js, places.js, dan reviews.js bertanggung jawab untuk menangani rute-rute HTTP. Mereka menerima permintaan dari klien (browser atau aplikasi lainnya) dan memanggil fungsi-fungsi yang sesuai di file controllers.
+
+controllers: File-file dalam folder ini seperti auth.js, places.js, dan reviews.js berisi logika aplikasi yang sebenarnya. Mereka menerima input dari rute-rute yang sesuai dan berinteraksi dengan model-model data untuk melakukan operasi CRUD (Create, Read, Update, Delete) atau logika bisnis lainnya.
+
+models: File-file seperti places.js, review.js, dan user.js dalam folder ini adalah definisi dari model-model data MongoDB. Mereka berinteraksi dengan basis data MongoDB dan menyediakan cara untuk membaca, menulis, memperbarui, dan menghapus data.
+
+middlewares: File-file di sini, seperti isAuth.js, isAuthor.js, dan isValidObjectId.js, merupakan middleware yang digunakan untuk memproses permintaan sebelum atau sesudah tiba di fungsi pengendali (controllers). Contohnya, isAuth.js mungkin digunakan untuk memeriksa apakah pengguna telah terautentikasi sebelum memproses permintaan.
+
+utils: File-file seperti ExpressError.js, HereMaps.js, dan wrapAsync.js dalam folder ini adalah utilitas atau fungsi-fungsi bantuan yang bisa digunakan oleh berbagai bagian aplikasi untuk tujuan tertentu. Misalnya, ExpressError.js mungkin berisi definisi untuk menangani kesalahan secara khusus.
+
+views: File-file dalam folder ini berisi tampilan-tampilan yang dihasilkan oleh aplikasi, seperti halaman HTML dinamis menggunakan mesin templat seperti EJS atau Pug. Rute-rute yang sesuai akan menghasilkan tampilan dari file-file di sini untuk dikirimkan kembali ke klien.
+
+
