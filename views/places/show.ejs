@@ -1,26 +1,42 @@
-<% layout('layouts/app') -%>
+<% layout('layouts/app') %>
 <link rel="stylesheet" href="/css/stars.css" />
 
-<div class="row mb-5">
+<div class="row">
   <div class="col-6">
-    <div class="card">
-      <% for(const image of place.images) {%>
-      <img src="/images/<%= image.filename %>" class="card-img-top" alt="<%= place.title %>" />
+    <div id="carouselImage" class="carousel slide">
+      <div class="carousel-inner">
+        <% place.images.forEach((image, index) => { %>
+        <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+          <img src="/images/<%= image.filename %>" class="d-block w-100" />
+        </div>
+        <% }) %>
+      </div>
+      <% if(place.images.length > 1) { %>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselImage" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselImage" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
       <% } %>
+    </div>
+    <div class="card mb-5">
       <div class="card-body">
-        <h3 class="card-title"><%= place.title %></h3>
-        <h6 class="card-text"><%= place.description %></h6>
+        <h5 class="card-title"><%= place.title %></h5>
+        <p class="card-text"><%= place.description %></p>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item"><%= place.location %></li>
-        <li class="list-group-item">Author: <%= place.author.username %></li>
-        <li class="list-group-item">$<%= place.price %></li>
+        <li class="list-group-item text-secondary"><%= place.location %></li>
+        <li class="list-group-item">Submitted by: <%= place.author.username %></li>
+        <li class="list-group-item"><%= place.price %></li>
       </ul>
-      <% if(currentUser && place.author.equals(currentUser._id)) { %>
+      <% if(currentUser && place.author.equals(currentUser._id)) {%>
       <div class="card-body">
         <a href="/places/<%= place._id %>/edit" class="card-link btn btn-warning text-white">Edit</a>
         <form action="/places/<%= place._id %>?_method=DELETE" method="POST" style="display: inline !important">
-          <button class="btn btn-danger">Delete</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
         </form>
       </div>
       <% } %>
@@ -31,7 +47,6 @@
     <h3>Leave a review</h3>
     <form action="/places/<%= place._id %>/reviews" method="POST" class="validated-form mb-3" novalidate>
       <div class="mb-3">
-        <label for="rating">Rating</label>
         <fieldset class="starability-basic">
           <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
           <input type="radio" id="first-rate1" name="review[rating]" value="1" />
@@ -47,23 +62,23 @@
         </fieldset>
       </div>
       <div class="mb-3">
-        <label for="body">Review</label>
-        <textarea name="review[body]" id="body" cols="30" rows="5" class="form-control" required></textarea>
+        <label for="body" class="form-label">Review</label>
+        <textarea class="form-control" name="review[body]" id="body" rows="3" required></textarea>
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">Please fill out this field.</div>
       </div>
       <button type="submit" class="btn btn-success">Submit</button>
     </form>
-    <% } %>
-    <br />
-    <% for(const review of place.reviews) { %>
+    <% } %> <% for(const review of place.reviews) { %>
     <div class="card mb-3">
       <div class="card-body">
+        <h5 class="card-title">Rating: <%= review.rating %></h5>
         <p class="starability-result" data-rating="<%= review.rating %>">Rated: <%= review.rating %> stars</p>
+        <h6 class="card-subtitle mb-2 text-body-secondary"><%= review.author.username %></h6>
         <p class="card-text"><%= review.body %></p>
-        <% if(currentUser && review.author.equals(currentUser._id)) { %>
+        <% if(currentUser && review.author.equals(currentUser._id)) {%>
         <form action="/places/<%= place._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" style="display: inline !important">
-          <button class="btn btn-danger btn-sm">Delete</button>
+          <button type="submit" class="btn btn-sm btn-danger">Delete</button>
         </form>
         <% } %>
       </div>
