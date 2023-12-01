@@ -2,20 +2,32 @@ const ejsMate = require("ejs-mate");
 const express = require("express");
 const session = require("express-session");
 const flash = require("connect-flash");
+const ExpressError = require("./utils/ExpressError");
 const methodOverride = require("method-override");
-const path = require("path");
 const mongoose = require("mongoose");
+const path = require("path");
+const app = express();
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
-const app = express();
+const hereMaps = require("./utils/hereMaps");
 
-// Set view engine and views directory
+// connect to mongodb
+mongoose
+  .connect("mongodb://127.0.0.1/yelp_clone")
+  .then((result) => {
+    console.log("connected to mongodb");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+// view engine
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Middleware
+// middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -43,36 +55,21 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
+  res.locals.error = req.flash("error");
   next();
 });
-
-// Connect to MongoDB and start the server
-async function startServer() {
-  try {
-    await mongoose.connect("mongodb://127.0.0.1/mevn_directory");
-    console.log("Connected to MongoDB");
-    app.listen(3000, () => {
-      console.log(`Server is running on http://127.0.0.1:3000`);
-    });
-  } catch (err) {
-    console.error("Error connecting to MongoDB:", err);
-  }
-}
-
-// Validation Middleware
-// ... [Kode validasi middleware lainnya]
 
 app.get("/", async (req, res) => {
   res.render("home");
 });
 
+// places routes
 app.use("/", require("./routes/user"));
 app.use("/places", require("./routes/places"));
 app.use("/places/:place_id/reviews", require("./routes/reviews"));
 
-// Error handling middleware
 app.all("*", (req, res, next) => {
-  next(new ErrorHandler());
+  next(new ExpressError("Page not found", 404));
 });
 
 app.use((err, req, res, next) => {
@@ -81,5 +78,6 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-// Start the server after connecting to MongoDB
-startServer();
+app.listen(3000, () => {
+  console.log(`server is running on http://127.0.0.1:3000`);
+});
