@@ -1,9 +1,10 @@
+// public/js/validate-form.js
 (() => {
   "use strict";
 
   const forms = document.querySelectorAll(".validated-form");
 
-  Array.from(forms).forEach((form) => {
+  forms.forEach((form) => {
     form.addEventListener(
       "submit",
       (event) => {

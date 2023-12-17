@@ -1,3 +1,4 @@
+// middlewares/isAuthor.js
 const Place = require("../models/place");
 const Review = require("../models/review");
 
@@ -16,7 +17,7 @@ module.exports.isAuthorReview = async (req, res, next) => {
   const { place_id, review_id } = req.params;
   const place = await Review.findById(review_id);
 
-  if (!place.author.equals(req.user._id)) {
+  if (!place || !place.author || !place.author.equals(req.user._id)) {
     req.flash("error_msg", "Not Authorized!");
     return res.redirect(`/places/${place_id}`);
   }

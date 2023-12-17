@@ -1,3 +1,4 @@
+// schemas/place.js
 const Joi = require("joi");
 
 module.exports.placeSchema = Joi.object({

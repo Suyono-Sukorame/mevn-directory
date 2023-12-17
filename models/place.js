@@ -1,8 +1,9 @@
+// models/place.js
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require("./review");
 
-const placeSchema = new Schema({
+const placeSchema = new mongoose.Schema({
   title: String,
   price: Number,
   description: String,

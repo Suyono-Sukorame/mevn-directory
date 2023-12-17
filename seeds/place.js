@@ -1,12 +1,14 @@
+// seeds/place.js
 const mongoose = require("mongoose");
-const Place = require("../models/place");
+const Place = require("../models/place"); // Pastikan model Place telah didefinisikan dengan benar
 const hereMaps = require("../utils/hereMaps");
+const placeSchema = require("../schemas/place");
 
 mongoose
   .connect("mongodb://127.0.0.1/mevn_directory")
   .then(() => {
     console.log("Connected to MongoDB");
-    seedPlaces();
+    seedPlaces(); // Panggil fungsi seedPlaces setelah koneksi berhasil
   })
   .catch((err) => {
     console.error("Connection error:", err);
@@ -54,20 +56,6 @@ async function seedPlaces() {
       price: 10000,
       description: "Pantai dengan pasir berwarna putih dan air laut yang jernih di Lombok, Nusa Tenggara Barat",
       location: "Pantai Tanjung Aan, Lombok, West Nusa Tenggara",
-      image: "https://source.unsplash.com/collection/2349781/1280x720",
-    },
-    {
-      title: "Bukit Bintang",
-      price: 0,
-      description: "Kawasan perbelanjaan dan hiburan di Kuala Lumpur, Malaysia",
-      location: "Bukit Bintang, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
-      image: "https://source.unsplash.com/collection/2349781/1280x720",
-    },
-    {
-      title: "Candi Prambanan",
-      price: 25000,
-      description: "Candi Hindu terbesar di Indonesia yang terletak di Yogyakarta",
-      location: "Candi Prambanan, Sleman, Special Region of Yogyakarta",
       image: "https://source.unsplash.com/collection/2349781/1280x720",
     },
     {
@@ -160,27 +148,37 @@ async function seedPlaces() {
   try {
     const newPlaces = await Promise.all(
       places.map(async (place) => {
-        let geoData = await hereMaps.geometry(place.location);
-        if (!geoData) {
-          geoData = { type: "Point", coordinates: [116.32883, -8.90952] };
+        try {
+          let geoData = await hereMaps.geometry(place.location);
+          if (!geoData) {
+            geoData = { type: "Point", coordinates: [116.32883, -8.90952] };
+          }
+          return {
+            ...place,
+            author: "656c6b809e6cd79e37408281",
+            images: [
+              {
+                url: `public/images/image-1681876521153-260851838.jpg`, // Ubah sesuai dengan path dan nama file gambar yang ingin Anda gunakan
+                filename: "image-1681876521153-260851838.jpg",
+              },
+            ],
+            geometry: geoData,
+          };
+        } catch (error) {
+          console.error("Error obtaining position data:", error);
+          return null;
         }
-        return {
-          ...place,
-          author: "6563d361e08220f6a2c75204",
-          images: {
-            url: "public\\images\\image-1681876521153-260851838.jpg",
-            filename: "image-1681876521153-260851838.jpg",
-          },
-          geometry: { ...geoData },
-        };
       })
     );
 
     await Place.deleteMany({});
-    await Place.insertMany(newPlaces);
-    console.log("Data berhasil disimpan");
-  } catch (err) {
-    console.error("Terjadi kesalahan saat menyimpan data:", err);
+
+    // Memasukkan data baru ke dalam database menggunakan insertMany()
+    const insertedPlaces = await Place.insertMany(newPlaces.filter(Boolean)); // Filter nilai null
+
+    console.log("Data inserted:", insertedPlaces);
+  } catch (error) {
+    console.error("Error saving data:", error);
   } finally {
     mongoose.disconnect();
   }

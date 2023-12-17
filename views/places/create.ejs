@@ -1,38 +1,44 @@
-<% layout('layouts/app') -%>
-<h1 class="text-center">Add Place</h1>
-<div class="col-6 offset-3">
-  <form action="/places" method="POST" class="validated-form" novalidate enctype="multipart/form-data">
-    <div class="mb-3">
-      <label for="title" class="form-label">Title</label>
-      <input type="text" name="place[title]" id="title" class="form-control" required />
-      <div class="valid-feedback">Looks good!</div>
-      <div class="invalid-feedback">Please fill out this field.</div>
+<!-- views/places/create.ejs -->
+<%- layout('layouts/app') %>
+<div class="container">
+  <h1 class="text-center mt-4 mb-4 display-4">Add Place</h1>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form action="/places" method="POST" class="validated-form" novalidate enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="title" class="form-label fs-5">Title</label>
+          <input type="text" name="place[title]" id="title" class="form-control fs-6" required />
+          <div class="valid-feedback fs-5">Looks good!</div>
+          <div class="invalid-feedback fs-5">Please fill out this field.</div>
+        </div>
+        <div class="mb-3">
+          <label for="location" class="form-label fs-5">Location</label>
+          <input type="text" name="place[location]" id="location" class="form-control fs-6" required />
+          <div class="valid-feedback fs-5">Looks good!</div>
+          <div class="invalid-feedback fs-5">Please fill out this field.</div>
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label fs-5">Description</label>
+          <textarea name="place[description]" id="description" class="form-control fs-6" rows="4" required></textarea>
+          <div class="valid-feedback fs-5">Looks good!</div>
+          <div class="invalid-feedback fs-5">Please fill out this field.</div>
+        </div>
+        <div class="mb-3">
+          <label for="price" class="form-label fs-5">Price</label>
+          <input type="text" name="place[price]" id="price" class="form-control fs-6" required />
+          <div class="valid-feedback fs-5">Looks good!</div>
+          <div class="invalid-feedback fs-5">Please fill out this field.</div>
+        </div>
+        <div class="mb-3">
+          <label for="image" class="form-label fs-5">Image</label>
+          <input type="file" name="image" dir="image" accept="image/*" class="form-control" multiple required />
+          <div class="valid-feedback fs-5">Looks good!</div>
+          <div class="invalid-feedback fs-5">Please fill out this field.</div>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-success btn-lg">Save</button>
+        </div>
+      </form>
     </div>
-    <div class="mb-3">
-      <label for="location" class="form-label">Location</label>
-      <input type="text" name="place[location]" id="location" class="form-control" required />
-      <div class="valid-feedback">Looks good!</div>
-      <div class="invalid-feedback">Please fill out this field.</div>
-    </div>
-    <div class="mb-3">
-      <label for="description" class="form-label">Description</label>
-      <textarea name="place[description]" id="description" class="form-control" required></textarea>
-      <div class="valid-feedback">Looks good!</div>
-      <div class="invalid-feedback">Please fill out this field.</div>
-    </div>
-    <div class="mb-3">
-      <label for="price" class="form-label">Price</label>
-      <input type="text" name="place[price]" id="price" class="form-control" required />
-      <div class="valid-feedback">Looks good!</div>
-      <div class="invalid-feedback">Please fill out this field.</div>
-    </div>
-    <div class="mb-3">
-      <label for="image" class="form-label">Image</label>
-      <input type="file" name="image" id="image" accept="image/*" class="form-control" multiple requred />
-      <div class="valid-feedback">Looks good!</div>
-      <div class="invalid-feedback">Please fill out this field.</div>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-  </form>
+  </div>
 </div>

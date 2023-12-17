@@ -1,33 +1,37 @@
+// app.js
 const ejsMate = require("ejs-mate");
 const express = require("express");
 const session = require("express-session");
 const flash = require("connect-flash");
-const ExpressError = require("./utils/ExpressError");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const path = require("path");
-const app = express();
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const User = require("./models/user");
 const hereMaps = require("./utils/hereMaps");
+const app = express();
 
-// connect to mongodb
+const User = require("./models/user");
+
+// Connect to MongoDB
 mongoose
-  .connect("mongodb://127.0.0.1/yelp_clone")
-  .then((result) => {
-    console.log("connected to mongodb");
+  .connect("mongodb://127.0.0.1/mevn_directory", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB");
   })
   .catch((err) => {
-    console.log(err);
+    console.error("Error connecting to MongoDB:", err);
   });
 
-// view engine
+// Set up view engine and directory
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// middleware
+// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -43,6 +47,7 @@ app.use(
     },
   })
 );
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -55,29 +60,40 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
-  res.locals.error = req.flash("error");
   next();
 });
 
+// Home route
 app.get("/", async (req, res) => {
+  const location = `Pantai Kuta, Kuta, Badung Regency, Bali`;
+  const reqLocation = await hereMaps.geocode(location);
+  console.log(reqLocation);
   res.render("home");
 });
 
-// places routes
-app.use("/", require("./routes/user"));
-app.use("/places", require("./routes/places"));
-app.use("/places/:place_id/reviews", require("./routes/reviews"));
+// Routes handling
+const userRoutes = require("./routes/user");
+const placesRoutes = require("./routes/places");
+const reviewsRoutes = require("./routes/reviews");
 
-app.all("*", (req, res, next) => {
-  next(new ExpressError("Page not found", 404));
+app.use("/", userRoutes);
+app.use("/places", placesRoutes);
+app.use("/places/:place_id/reviews", reviewsRoutes);
+
+// Error handling middleware
+app.use((req, res, next) => {
+  const err = new Error("Page not found");
+  err.status = 404;
+  next(err);
 });
 
 app.use((err, req, res, next) => {
-  const { statusCode = 500 } = err;
-  if (!err.message) err.message = "Oh No, Something Went Wrong!";
-  res.status(statusCode).render("error", { err });
+  const { status = 500, message = "Oh No, Something Wrong!" } = err;
+  res.status(status).render("error", { err: message });
 });
 
-app.listen(3000, () => {
-  console.log(`server is running on http://127.0.0.1:3000`);
+// Server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://127.0.0.1:${PORT}`);
 });

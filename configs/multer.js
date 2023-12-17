@@ -1,5 +1,7 @@
+// configs/multer.js
 const multer = require("multer");
 const path = require("path");
+const ExpressError = require("../utils/ExpressError");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -18,7 +20,7 @@ const upload = multer({
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error("Only images are allowed."));
+      cb(new ExpressError("Only images are allowed.", 405));
     }
   },
 });

@@ -1,3 +1,4 @@
+// routes/user.js
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
@@ -5,12 +6,7 @@ const AuthController = require("../controllers/auth");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
 
-router
-  .route("/register")
-  .get((req, res) => {
-    res.render("auth/register");
-  })
-  .post(wrapAsync(AuthController.register));
+router.route("/register").get(AuthController.registerForm).post(wrapAsync(AuthController.register));
 
 router
   .route("/login")
