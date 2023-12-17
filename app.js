@@ -1,4 +1,5 @@
 // app.js
+
 const ejsMate = require("ejs-mate");
 const express = require("express");
 const session = require("express-session");
@@ -14,10 +15,10 @@ const app = express();
 const User = require("./models/user");
 
 // Connect to MongoDB
+
 mongoose
   .connect("mongodb://127.0.0.1/mevn_directory", {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Connected to MongoDB");
